@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
         maven {
             name = "forge"
-            url = "http://files.minecraftforge.net/maven"
+            url = "https://maven.minecraftforge.net/"
         }
         maven {
             name = "sonatype"
@@ -11,7 +11,9 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
+      classpath ('com.anatawa12.forge:ForgeGradle:1.2-1.1.+') {
+            changing = true
+      }
     }
 }
 
@@ -22,8 +24,8 @@ group= "com.vladmarica.betterping"
 archivesBaseName = "BetterPing"
 
 minecraft {
-    version = "1.7.10-10.13.4.1566-1.7.10"
-    runDir = "run"
+    version = "1.7.10-10.13.4.1614-1.7.10"
+    runDir = "eclipse"
 }
 
 dependencies {
