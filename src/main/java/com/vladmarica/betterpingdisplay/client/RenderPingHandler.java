@@ -71,7 +71,7 @@ public class RenderPingHandler {
                         String pingString = String.format(BetterPingDisplayMod.textFormatString, ping);
                         int strWidth = mc.fontRenderer.getStringWidth(pingString);
                         int pingTextColor = BetterPingDisplayMod.autoColorText ? ColorUtil.getColor(ping) : BetterPingDisplayMod.textColor;
-                        mc.fontRenderer.drawStringWithShadow(pingString, xPos + columnWidth - (BetterPingDisplayMod.renderPingBars ? 16 : 2) - strWidth, yPos, pingTextColor);
+                        mc.fontRenderer.drawStringWithShadow(pingString, xPos + columnWidth - (BetterPingDisplayMod.renderPingBars ? 18 : 2) - strWidth, yPos, pingTextColor);
 
                         if (scoreobjective != null) {
                             int endX = xPos + mc.fontRenderer.getStringWidth(displayName) + 5;
