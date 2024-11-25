@@ -1,129 +1,83 @@
 package com.vladmarica.betterpingdisplay;
 
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.config.ModConfigEvent;
-import org.apache.commons.lang3.tuple.Pair;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.event.config.ModConfigEvent;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
-@Mod.EventBusSubscriber(modid = BetterPingDisplayMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
-public final class Config {
-  public static final ForgeConfigSpec CLIENT_SPEC;
+@EventBusSubscriber(modid = BetterPingDisplayMod.MODID, bus = EventBusSubscriber.Bus.MOD)
+public class Config {
+    private static final String DEFAULT_PING_TEXT_COLOR = "#A0A0A0";
+    private static final String DEFAULT_PING_TEXT_FORMAT = "%dms";
 
-  private static Config instance = new Config();
-  private static final ClientConfig CLIENT;
-  private static final int DEFAULT_PING_TEXT_COLOR = 0xA0A0A0;
-  private static final String DEFAULT_PING_TEXT_FORMAT = "%dms";
+    private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
 
-  static {
-    final Pair<ClientConfig, ForgeConfigSpec> specPair =
-        new ForgeConfigSpec.Builder().configure(ClientConfig::new);
-    CLIENT_SPEC = specPair.getRight();
-    CLIENT = specPair.getLeft();
-  }
+    private static final ModConfigSpec.ConfigValue<String> SPEC_TEXT_COLOR = BUILDER
+            .comment(String.format(
+                    "The color of the ping display text, written in hex format. Default: %s\n", DEFAULT_PING_TEXT_COLOR),
+                    "Has no effect if 'autoColorText' is set to true")
+            .define("textColor", DEFAULT_PING_TEXT_COLOR, o -> {
+                if (!(o instanceof String)) {
+                    return false;
+                }
 
-  private int textColor = DEFAULT_PING_TEXT_COLOR;
-  private String textFormatString = DEFAULT_PING_TEXT_FORMAT;
-  private boolean renderPingBars = false;
-  private boolean autoColorText = true;
+                try {
+                    Integer.parseInt(((String) o).substring(1), 16);
+                    return true;
+                } catch (NumberFormatException e) {
+                    return false;
+                }
+            });
 
-  private static Config from(
-      String textColor, String textFormatString, boolean renderPingBars, boolean autoColorText) {
-    Config config = new Config();
+    private static final ModConfigSpec.ConfigValue<String> SPEC_PING_TEXT_FORMAT = BUILDER
+            .comment(
+                    "Customize the display text of the ping display",
+                    "Must contain a '%d', which will be replaced with the ping number",
+                    "Example: '%dms' will transform into '123ms' if the player's ping is 123",
+                    String.format("Default: %s", DEFAULT_PING_TEXT_FORMAT))
+            .define("textFormatString", DEFAULT_PING_TEXT_FORMAT);
 
-    if (textColor.startsWith("#")) {
-      try {
-        config.textColor = Integer.parseInt(textColor.substring(1), 16);
-      } catch (NumberFormatException ex) {
-        BetterPingDisplayMod.logger()
-            .error("Config option 'textColor' is invalid - it must be a hex color code");
-        config.textColor = DEFAULT_PING_TEXT_COLOR;
-      }
+    private static final ModConfigSpec.ConfigValue<Boolean> SPEC_RENDER_PING_BARS = BUILDER
+            .comment("Whether to also draw the default Minecraft ping bars")
+            .define("renderPingBars", false);
+
+    private static final ModConfigSpec.ConfigValue<Boolean> SPEC_AUTO_COLOR_TEXT = BUILDER
+            .comment(
+                    "Whether to color a player's ping based on their latency.",
+                    "Example: low latency = green, high latency = red",
+                    "If this setting is true, then the 'textColor' setting is ignored")
+            .define("autoColorText", true);
+
+    static final ModConfigSpec SPEC = BUILDER.build();
+
+    private static int textColor;
+    private static String textFormatString;
+    private static boolean renderPingBars;
+    private static boolean autoColorText;
+
+    public static int getTextColor() {
+        return textColor;
     }
 
-    if (textFormatString.contains("%d")) {
-      config.textFormatString = textFormatString;
-    } else {
-      config.textFormatString = DEFAULT_PING_TEXT_FORMAT;
-      BetterPingDisplayMod.logger()
-          .error("Config option 'textFormatString' is invalid - it needs to contain %d");
+    public static String getTextFormatString() {
+        return textFormatString;
     }
 
-    config.renderPingBars = renderPingBars;
-    config.autoColorText = autoColorText;
-
-    return config;
-  }
-
-  public int getTextColor() {
-    return textColor;
-  }
-
-  public String getTextFormatString() {
-    return textFormatString;
-  }
-
-  public boolean shouldRenderPingBars() {
-    return renderPingBars;
-  }
-
-  public boolean shouldAutoColorText() {
-    return autoColorText;
-  }
-
-  public static Config instance() {
-    return instance;
-  }
-
-  @SubscribeEvent
-  public static void onModConfigEvent(final ModConfigEvent configEvent) {
-    if (configEvent.getConfig().getSpec() == CLIENT_SPEC) {
-      instance =
-          from(
-              CLIENT.textColor.get(),
-              CLIENT.textFormatString.get(),
-              CLIENT.renderPingBars.get(),
-              CLIENT.autoColorText.get());
+    public static boolean shouldRenderPingBars() {
+        return renderPingBars;
     }
-  }
 
-  private static class ClientConfig {
-    public final ForgeConfigSpec.ConfigValue<String> textColor;
-    public final ForgeConfigSpec.ConfigValue<String> textFormatString;
-    public final ForgeConfigSpec.ConfigValue<Boolean> renderPingBars;
-    public final ForgeConfigSpec.ConfigValue<Boolean> autoColorText;
-
-    public ClientConfig(ForgeConfigSpec.Builder builder) {
-      textColor =
-          builder
-              .comment(
-                  "The color of the ping display text, written in hex format. Default: #A0A0A0",
-                  "Has no effect if 'autoColorText' is set to true")
-              .define("textColor", "#A0A0A0");
-
-      textFormatString =
-          builder
-              .comment(
-                  "Customize the display text of the ping display",
-                  "Must contain a '%d', which will be replaced with the ping number",
-                  "Example: '%dms' will transform into '123ms' if the player's ping is 123",
-                  "Default: %dms")
-              .define("textFormatString", "%dms");
-
-      renderPingBars =
-          builder
-              .comment("Whether to also draw the default Minecraft ping bars")
-              .define("renderPingBars", false);
-
-      autoColorText =
-          builder
-              .comment(
-                  "Whether to color a player's ping based on their latency.",
-                  "Example: low latency = green, high latency = red",
-                  "If this setting is true, then the 'textColor' setting is ignored")
-              .define("autoColorText", true);
+    public static boolean shouldAutoColorText() {
+        return autoColorText;
     }
-  }
 
-  private Config() {}
+    @SubscribeEvent
+    static void onLoad(final ModConfigEvent builder) {
+        textColor = Integer.parseInt(SPEC_TEXT_COLOR.get().substring(1), 16);
+        textFormatString = SPEC_PING_TEXT_FORMAT.get();
+        renderPingBars = SPEC_RENDER_PING_BARS.get();
+        autoColorText = SPEC_AUTO_COLOR_TEXT.get();
+
+        BetterPingDisplayMod.logger.atInfo().log("Config loaded!");
+    }
 }

@@ -20,4 +20,5 @@ This mod's config file is `betterpingdisplay-client.toml`. It contains the follo
 | textFormatString  | `%dms` | The format string for ping text. Must include a `%d`, which will be replaced dynamically by the actual ping value.
 
 ## Requirements
-* [Minecraft Forge](http://files.minecraftforge.net)
+* [Minecraft Forge](http://files.minecraftforge.net) (1.20 and older)
+* NeoForge (1.21 and newer)

@@ -6,10 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.PlayerTabOverlay;
 import net.minecraft.client.multiplayer.PlayerInfo;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public final class RenderPingHandler {
   private static final int PING_TEXT_RENDER_OFFSET = -13;
 
@@ -22,17 +19,15 @@ public final class RenderPingHandler {
       int y,
       PlayerInfo player) {
 
-    Config config = Config.instance();
-
-    String pingString = String.format(config.getTextFormatString(), player.getLatency());
+    String pingString = String.format(Config.getTextFormatString(), player.getLatency());
     int pingStringWidth = mc.font.width(pingString);
     int pingTextColor =
-        config.shouldAutoColorText()
+        Config.shouldAutoColorText()
             ? PingColors.getColor(player.getLatency())
-            : config.getTextColor();
+            : Config.getTextColor();
 
     int textX = width + x - pingStringWidth;
-    if (config.shouldRenderPingBars()) {
+    if (Config.shouldRenderPingBars()) {
       textX += PING_TEXT_RENDER_OFFSET;
     }
 
@@ -40,7 +35,7 @@ public final class RenderPingHandler {
     graphics.drawString(mc.font, pingString, textX, y, pingTextColor);
 
     // Draw the ping bars
-    if (config.shouldRenderPingBars()) {
+    if (Config.shouldRenderPingBars()) {
       ((PlayerTabOverlayInvoker) overlay).invokeRenderPingIcon(graphics, width, x, y, player);
     }
   }

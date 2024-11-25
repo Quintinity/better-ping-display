@@ -1,31 +1,19 @@
 package com.vladmarica.betterpingdisplay;
 
-import net.minecraftforge.fml.IExtensionPoint;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.config.ModConfig;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import net.neoforged.fml.common.Mod;
 
-import static net.minecraftforge.fml.IExtensionPoint.DisplayTest.IGNORESERVERONLY;
-
-@Mod(BetterPingDisplayMod.MODID)
+@Mod(value = BetterPingDisplayMod.MODID, dist = Dist.CLIENT)
 public class BetterPingDisplayMod {
+  public static final Logger logger = LogManager.getLogger();
+
   public static final String MODID = "betterpingdisplay";
-  private static final Logger LOGGER = LogManager.getLogger();
 
-  public BetterPingDisplayMod() {
-    ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Config.CLIENT_SPEC);
-
-    ModLoadingContext.get()
-        .registerExtensionPoint(
-            IExtensionPoint.DisplayTest.class,
-            () ->
-                new IExtensionPoint.DisplayTest(
-                    () -> IGNORESERVERONLY, (a, b) -> true));
-  }
-
-  public static Logger logger() {
-    return LOGGER;
+  public BetterPingDisplayMod(ModContainer container) {
+    container.registerConfig(ModConfig.Type.CLIENT, Config.SPEC);
   }
 }
