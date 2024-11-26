@@ -9,7 +9,7 @@ import net.neoforged.fml.common.Mod;
 
 @Mod(value = BetterPingDisplayMod.MODID, dist = Dist.CLIENT)
 public class BetterPingDisplayMod {
-  public static final Logger logger = LogManager.getLogger();
+  public static final Logger logger = LogManager.getLogger("BetterPingDisplay");
 
   public static final String MODID = "betterpingdisplay";
 
