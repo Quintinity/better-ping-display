@@ -1,11 +1,11 @@
 # Better Ping Display
 
-[![](http://cf.way2muchnoise.eu/better-ping-display.svg)](https://curseforge.com/minecraft/mc-mods/better-ping-display) [![](http://cf.way2muchnoise.eu/versions/better-ping-display.svg)](https://curseforge.com/minecraft/mc-mods/better-ping-display)
+[![](https://img.shields.io/curseforge/dt/292038?style=for-the-badge&logo=curseforge&label=Downloads&color=rgb(241%2C%20100%2C%2054))](https://www.curseforge.com/minecraft/mc-mods/better-ping-display) [![](https://img.shields.io/modrinth/dt/better-ping-display?style=for-the-badge&logo=modrinth&logoColor=rgb(27%2C%20217%2C%20106)&label=Downloads&color=rgb(27%2C%20217%2C%20106))](https://modrinth.com/mod/better-ping-display)
 
 A mod for Minecraft to display each player's ping in the player list as a number. There is also a config file
 for changing the text color and format.
 
-![](https://camo.githubusercontent.com/db870df3e5e663d9a7ca5e6dafc0d72c68fd31d909ab623378a778ee9289719c/68747470733a2f2f692e696d6775722e636f6d2f485472483069322e706e67)
+![](https://vladmarica.com/assets/minecraft/better-ping-display.png)
 
 This is a client-side mod. The server doesn't need to have it installed. It works even when playing on vanilla servers.
 
@@ -21,4 +21,4 @@ This mod's config file is `betterpingdisplay-client.toml`. It contains the follo
 
 ## Requirements
 * [Minecraft Forge](http://files.minecraftforge.net) (1.20 and older)
-* NeoForge (1.21 and newer)
+* [NeoForge](https://neoforged.net) (1.21 and newer)
